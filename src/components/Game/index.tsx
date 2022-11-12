@@ -1,6 +1,7 @@
-import React, { FC, FormEvent, useMemo, useState } from 'react'
+import React, { FC, FormEvent, useMemo, useEffect } from 'react'
 import { WordInput } from '../WordInput'
 import ArrowIcon from '../../assets/icons/arrow.component.svg'
+import { useGame } from '../../hooks/useGame'
 import { Styled } from './styled'
 
 interface IGame {
@@ -9,11 +10,15 @@ interface IGame {
 }
 
 export const Game: FC<IGame> = ({ rounds, wordLength }) => {
-  const [round, setRound] = useState(0)
+  const { isLoading, isComplete, game, startGame, makeGuess } = useGame()
   const roundsMap: undefined[] = useMemo(
     () => new Array(rounds).fill(undefined),
     [rounds]
   )
+
+  const { guess = [] } = game ?? {}
+  const round = guess.length
+  const disabled = isLoading || isComplete || !game
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -24,8 +29,12 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
       return false
     }
 
-    setRound(Math.min(round + 1, rounds))
+    void makeGuess(word)
   }
+
+  useEffect(() => {
+    void startGame()
+  }, [])
 
   return (
     <form onSubmit={handleSubmit}>
@@ -38,8 +47,9 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
             <Styled.WordWrapper key={index}>
               <WordInput
                 length={wordLength}
-                disabled={index !== round}
+                disabled={disabled || index !== round}
                 name={`word-${index}`}
+                result={guess[index]?.result}
               />
             </Styled.WordWrapper>
           ))}

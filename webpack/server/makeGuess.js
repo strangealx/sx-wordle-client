@@ -16,7 +16,7 @@ const makeGuess = ({ id }, { guess }) => {
     return {
       character: character.toUpperCase(),
       position: isEqual,
-      exists: isEqual,
+      exists: isEqual
     }
   })
 
@@ -31,10 +31,10 @@ const makeGuess = ({ id }, { guess }) => {
 
   return {
     ...getGameById(id),
-    guess: [{ id: 1, result }],
+    guess: [{ id: 1, result }]
   }
 }
 
 module.exports = {
-  makeGuess,
+  makeGuess
 }

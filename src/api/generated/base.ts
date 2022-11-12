@@ -18,7 +18,7 @@ import { Configuration } from './configuration'
 import globalAxios, {
   AxiosPromise,
   AxiosInstance,
-  AxiosRequestConfig,
+  AxiosRequestConfig
 } from 'axios'
 
 export const BASE_PATH = 'http://localhost:3000'.replace(/\/+$/, '')
@@ -31,7 +31,7 @@ export const COLLECTION_FORMATS = {
   csv: ',',
   ssv: ' ',
   tsv: '\t',
-  pipes: '|',
+  pipes: '|'
 }
 
 /**

@@ -5,5 +5,5 @@ const createRequestHandler = (fn) => (req, res) => {
 }
 
 module.exports = {
-  createRequestHandler,
+  createRequestHandler
 }

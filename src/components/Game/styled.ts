@@ -46,5 +46,5 @@ export const Styled = {
   WordWrapper,
   FormContent,
   ArrowRight,
-  ArrowLeft,
+  ArrowLeft
 }

@@ -9,8 +9,8 @@ module.exports = (env) => {
   return merge(mode === 'development' ? dev : build, {
     plugins: [
       new Dotenv({
-        path: `./.env.${mode}`,
-      }),
-    ],
+        path: `./.env.${mode}`
+      })
+    ]
   })
 }

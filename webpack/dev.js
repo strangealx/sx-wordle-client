@@ -17,6 +17,6 @@ module.exports = merge(common, {
       app.patch('/api/game/:id', makeGuess)
 
       return middlewares
-    },
-  },
+    }
+  }
 })

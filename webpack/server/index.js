@@ -6,5 +6,5 @@ const { createRequestHandler } = require('./utils')
 module.exports = {
   createNewGame: createRequestHandler(createNewGame),
   makeGuess: createRequestHandler(makeGuess),
-  getGameById: createRequestHandler(getGameById),
+  getGameById: createRequestHandler(getGameById)
 }

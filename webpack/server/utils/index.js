@@ -3,5 +3,5 @@ const { createRequestHandler } = require('./createRequestHandler')
 
 module.exports = {
   getHash,
-  createRequestHandler,
+  createRequestHandler
 }

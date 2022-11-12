@@ -69,7 +69,7 @@ export const setBasicAuthToObject = function (
   if (configuration && (configuration.username || configuration.password)) {
     object['auth'] = {
       username: configuration.username,
-      password: configuration.password,
+      password: configuration.password
     }
   }
 }
@@ -191,7 +191,7 @@ export const createRequestFunction = function (
   ) => {
     const axiosRequestArgs = {
       ...axiosArgs.options,
-      url: (configuration?.basePath || basePath) + axiosArgs.url,
+      url: (configuration?.basePath || basePath) + axiosArgs.url
     }
     return axios.request<T, R>(axiosRequestArgs)
   }

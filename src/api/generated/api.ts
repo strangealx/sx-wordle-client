@@ -16,7 +16,7 @@ import { Configuration } from './configuration'
 import globalAxios, {
   AxiosPromise,
   AxiosInstance,
-  AxiosRequestConfig,
+  AxiosRequestConfig
 } from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -30,7 +30,7 @@ import {
   setSearchParams,
   serializeDataIfNeeded,
   toPathString,
-  createRequestFunction,
+  createRequestFunction
 } from './common'
 // @ts-ignore
 import {
@@ -38,7 +38,7 @@ import {
   COLLECTION_FORMATS,
   RequestArgs,
   BaseAPI,
-  RequiredError,
+  RequiredError
 } from './base'
 
 /**
@@ -107,7 +107,7 @@ export interface Game {
    * @type {string}
    * @memberof Game
    */
-  result?: GameResultEnum
+  status?: GameStatusEnum
   /**
    * the word, presented when complete is \"true\"
    * @type {string}
@@ -116,12 +116,13 @@ export interface Game {
   secret?: string
 }
 
-export const GameResultEnum = {
+export const GameStatusEnum = {
   Success: 'SUCCESS',
   Fail: 'FAIL',
+  InProgress: 'IN_PROGRESS'
 } as const
 
-export type GameResultEnum = typeof GameResultEnum[keyof typeof GameResultEnum]
+export type GameStatusEnum = typeof GameStatusEnum[keyof typeof GameStatusEnum]
 
 /**
  *
@@ -184,7 +185,7 @@ export const WordleApiAxiosParamCreator = function (
       const localVarRequestOptions = {
         method: 'POST',
         ...baseOptions,
-        ...options,
+        ...options
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
@@ -195,12 +196,12 @@ export const WordleApiAxiosParamCreator = function (
       localVarRequestOptions.headers = {
         ...localVarHeaderParameter,
         ...headersFromBaseOptions,
-        ...options.headers,
+        ...options.headers
       }
 
       return {
         url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
+        options: localVarRequestOptions
       }
     },
     /**
@@ -230,7 +231,7 @@ export const WordleApiAxiosParamCreator = function (
       const localVarRequestOptions = {
         method: 'GET',
         ...baseOptions,
-        ...options,
+        ...options
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
@@ -241,12 +242,12 @@ export const WordleApiAxiosParamCreator = function (
       localVarRequestOptions.headers = {
         ...localVarHeaderParameter,
         ...headersFromBaseOptions,
-        ...options.headers,
+        ...options.headers
       }
 
       return {
         url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
+        options: localVarRequestOptions
       }
     },
     /**
@@ -278,7 +279,7 @@ export const WordleApiAxiosParamCreator = function (
       const localVarRequestOptions = {
         method: 'PATCH',
         ...baseOptions,
-        ...options,
+        ...options
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
@@ -291,7 +292,7 @@ export const WordleApiAxiosParamCreator = function (
       localVarRequestOptions.headers = {
         ...localVarHeaderParameter,
         ...headersFromBaseOptions,
-        ...options.headers,
+        ...options.headers
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         guess,
@@ -301,9 +302,9 @@ export const WordleApiAxiosParamCreator = function (
 
       return {
         url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
+        options: localVarRequestOptions
       }
-    },
+    }
   }
 }
 
@@ -385,7 +386,7 @@ export const WordleApiFp = function (configuration?: Configuration) {
         BASE_PATH,
         configuration
       )
-    },
+    }
   }
 }
 
@@ -435,7 +436,7 @@ export const WordleApiFactory = function (
       return localVarFp
         .makeGuess(id, guess, options)
         .then((request) => request(axios, basePath))
-    },
+    }
   }
 }
 

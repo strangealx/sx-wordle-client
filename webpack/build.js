@@ -8,8 +8,8 @@ module.exports = merge(common, {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        minify: TerserPlugin.uglifyJsMinify,
-      }),
-    ],
-  },
+        minify: TerserPlugin.uglifyJsMinify
+      })
+    ]
+  }
 })

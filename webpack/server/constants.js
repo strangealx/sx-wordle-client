@@ -3,5 +3,5 @@ const WORD = 'magic'
 
 module.exports = {
   SALT,
-  WORD,
+  WORD
 }

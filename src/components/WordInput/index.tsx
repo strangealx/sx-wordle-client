@@ -5,20 +5,23 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
+import { GuessResponse } from '../../api/generated'
 import { Styled } from './styled'
 
-interface IWordInputProps {
+interface IWordInput {
   length: number
   name: string
   disabled?: boolean
+  result?: GuessResponse['result']
 }
 
-export const WordInput: FC<IWordInputProps> = ({
+export const WordInput: FC<IWordInput> = ({
   length,
   name,
-  disabled = false,
+  result,
+  disabled = false
 }) => {
   const [value, setValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -29,9 +32,9 @@ export const WordInput: FC<IWordInputProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {
-      target: { value: current },
+      target: { value: current }
     } = e
-    setValue(current.substring(0, length).replace(/[^а-яё]/gm, ''))
+    setValue(current.substring(0, length).replace(/[^a-z]/gm, ''))
   }
 
   const setFocus = useCallback(() => {
@@ -63,11 +66,25 @@ export const WordInput: FC<IWordInputProps> = ({
         autoComplete="off"
       />
       <Styled.Letters>
-        {letterMap.map((_, index) => (
-          <Styled.Letter key={index}>
-            {value[index] !== undefined ? value[index] : '\u00a0'}
-          </Styled.Letter>
-        ))}
+        {letterMap.map((_, index) => {
+          const { exists = false, position = false } = result?.[index] ?? {}
+          const hasInput = value[index] !== undefined
+          const char = hasInput ? value[index] : '\u00a0'
+
+          return (
+            <Styled.Letter
+              key={index}
+              withValue={Boolean(result?.[index])}
+              exists={exists}
+              inPosition={position}
+              hasInput={hasInput}
+              delay={200 * index}
+            >
+              <Styled.LetterFront>{char}</Styled.LetterFront>
+              <Styled.LetterBack>{char}</Styled.LetterBack>
+            </Styled.Letter>
+          )
+        })}
       </Styled.Letters>
     </Styled.WordInputWrapper>
   )

@@ -15,15 +15,15 @@ const getGameById = ({ id }) => {
             result: new Array(5).fill({
               character: 'A',
               position: true,
-              exists: true,
-            }),
-          },
+              exists: true
+            })
+          }
         ]
       : [],
-    ...(isSuccess ? { salt: SALT, result: 'SUCCESS', word: WORD } : undefined),
+    ...(isSuccess ? { salt: SALT, result: 'SUCCESS', word: WORD } : undefined)
   }
 }
 
 module.exports = {
-  getGameById,
+  getGameById
 }
