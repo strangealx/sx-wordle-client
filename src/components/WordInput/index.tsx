@@ -1,12 +1,4 @@
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GuessResponse } from '../../api/generated'
 import { Styled } from './styled'
 
@@ -17,18 +9,10 @@ interface IWordInput {
   result?: GuessResponse['result']
 }
 
-export const WordInput: FC<IWordInput> = ({
-  length,
-  name,
-  result,
-  disabled = false
-}) => {
+export const WordInput: FC<IWordInput> = ({ length, name, result, disabled = false }) => {
   const [value, setValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
-  const letterMap: undefined[] = useMemo(
-    () => new Array(length).fill(undefined),
-    [length]
-  )
+  const letterMap: undefined[] = useMemo(() => new Array(length).fill(undefined), [length])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {

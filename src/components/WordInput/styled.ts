@@ -96,9 +96,7 @@ const Letter = styled.div<ILetter>`
 
       ${LetterBack} {
         transform: rotateY(0turn);
-        background-color: ${
-          inPosition ? '#538d4e' : exists ? '#b59f3b' : '#3a3a3c'
-        }
+        background-color: ${inPosition ? '#538d4e' : exists ? '#b59f3b' : '#3a3a3c'}
       }
     `}
 `

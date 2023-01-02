@@ -13,11 +13,7 @@
  */
 
 import { Configuration } from './configuration'
-import globalAxios, {
-  AxiosPromise,
-  AxiosInstance,
-  AxiosRequestConfig
-} from 'axios'
+import globalAxios, { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
 import {
@@ -33,13 +29,7 @@ import {
   createRequestFunction
 } from './common'
 // @ts-ignore
-import {
-  BASE_PATH,
-  COLLECTION_FORMATS,
-  RequestArgs,
-  BaseAPI,
-  RequiredError
-} from './base'
+import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base'
 
 /**
  *
@@ -89,13 +79,13 @@ export interface Game {
    * @type {string}
    * @memberof Game
    */
-  salt?: string
+  secret?: string
   /**
    *
    * @type {boolean}
    * @memberof Game
    */
-  complete: boolean
+  isCompleted: boolean
   /**
    *
    * @type {Array<GuessResponse>}
@@ -113,7 +103,7 @@ export interface Game {
    * @type {string}
    * @memberof Game
    */
-  secret?: string
+  word?: string
 }
 
 export const GameStatusEnum = {
@@ -156,24 +146,72 @@ export interface GuessResponse {
    */
   result: Array<Character>
 }
+/**
+ *
+ * @export
+ * @interface Language
+ */
+export interface Language {
+  /**
+   *
+   * @type {number}
+   * @memberof Language
+   */
+  id: number
+  /**
+   *
+   * @type {string}
+   * @memberof Language
+   */
+  code: string
+}
+/**
+ *
+ * @export
+ * @interface Settings
+ */
+export interface Settings {
+  /**
+   *
+   * @type {number}
+   * @memberof Settings
+   */
+  wordLength: number
+  /**
+   *
+   * @type {number}
+   * @memberof Settings
+   */
+  maxRounds: number
+  /**
+   *
+   * @type {string}
+   * @memberof Settings
+   */
+  defaultLanguage: string
+}
 
 /**
  * WordleApi - axios parameter creator
  * @export
  */
-export const WordleApiAxiosParamCreator = function (
-  configuration?: Configuration
-) {
+export const WordleApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      *
      * @summary Create new game instance
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createNewGame: async (
+      xFingerprint: string,
+      acceptLanguage?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
+      // verify required parameter 'xFingerprint' is not null or undefined
+      assertParamExists('createNewGame', 'xFingerprint', xFingerprint)
       const localVarPath = `/game`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -182,22 +220,21 @@ export const WordleApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options
-      }
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers
+      if (xFingerprint != null) {
+        localVarHeaderParameter['X-Fingerprint'] = String(xFingerprint)
       }
+
+      if (acceptLanguage != null) {
+        localVarHeaderParameter['Accept-Language'] = String(acceptLanguage)
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -208,19 +245,22 @@ export const WordleApiAxiosParamCreator = function (
      *
      * @summary Find game by id
      * @param {number} id
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getGameById: async (
       id: number,
+      xFingerprint: string,
+      acceptLanguage?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('getGameById', 'id', id)
-      const localVarPath = `/game/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id))
-      )
+      // verify required parameter 'xFingerprint' is not null or undefined
+      assertParamExists('getGameById', 'xFingerprint', xFingerprint)
+      const localVarPath = `/game/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -228,22 +268,77 @@ export const WordleApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (xFingerprint != null) {
+        localVarHeaderParameter['X-Fingerprint'] = String(xFingerprint)
       }
+
+      if (acceptLanguage != null) {
+        localVarHeaderParameter['Accept-Language'] = String(acceptLanguage)
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions
+      }
+    },
+    /**
+     *
+     * @summary Get available languages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getLanguageList: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/language/list`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions
       }
+    },
+    /**
+     *
+     * @summary Get game settings
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSettings: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/settings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -254,21 +349,26 @@ export const WordleApiAxiosParamCreator = function (
      *
      * @summary Add new guess
      * @param {number} id
-     * @param {Guess} [guess]
+     * @param {string} xFingerprint
+     * @param {Guess} guess
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     makeGuess: async (
       id: number,
-      guess?: Guess,
+      xFingerprint: string,
+      guess: Guess,
+      acceptLanguage?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('makeGuess', 'id', id)
-      const localVarPath = `/game/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id))
-      )
+      // verify required parameter 'xFingerprint' is not null or undefined
+      assertParamExists('makeGuess', 'xFingerprint', xFingerprint)
+      // verify required parameter 'guess' is not null or undefined
+      assertParamExists('makeGuess', 'guess', guess)
+      const localVarPath = `/game/{id}/guess`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -276,29 +376,24 @@ export const WordleApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = {
-        method: 'PATCH',
-        ...baseOptions,
-        ...options
-      }
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      if (xFingerprint != null) {
+        localVarHeaderParameter['X-Fingerprint'] = String(xFingerprint)
+      }
+
+      if (acceptLanguage != null) {
+        localVarHeaderParameter['Accept-Language'] = String(acceptLanguage)
+      }
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        guess,
-        localVarRequestOptions,
-        configuration
-      )
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers }
+      localVarRequestOptions.data = serializeDataIfNeeded(guess, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -318,74 +413,86 @@ export const WordleApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Create new game instance
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createNewGame(
+      xFingerprint: string,
+      acceptLanguage?: string,
       options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.createNewGame(
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.createNewGame(xFingerprint, acceptLanguage, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
      *
      * @summary Find game by id
      * @param {number} id
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getGameById(
       id: number,
+      xFingerprint: string,
+      acceptLanguage?: string,
       options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getGameById(
-        id,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getGameById(id, xFingerprint, acceptLanguage, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @summary Get available languages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getLanguageList(
+      options?: AxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Language>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getLanguageList(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @summary Get game settings
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getSettings(
+      options?: AxiosRequestConfig
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Settings>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getSettings(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
      *
      * @summary Add new guess
      * @param {number} id
-     * @param {Guess} [guess]
+     * @param {string} xFingerprint
+     * @param {Guess} guess
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async makeGuess(
       id: number,
-      guess?: Guess,
+      xFingerprint: string,
+      guess: Guess,
+      acceptLanguage?: string,
       options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>
-    > {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Game>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.makeGuess(
         id,
+        xFingerprint,
         guess,
+        acceptLanguage,
         options
       )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     }
   }
 }
@@ -394,47 +501,71 @@ export const WordleApiFp = function (configuration?: Configuration) {
  * WordleApi - factory interface
  * @export
  */
-export const WordleApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
+export const WordleApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
   const localVarFp = WordleApiFp(configuration)
   return {
     /**
      *
      * @summary Create new game instance
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createNewGame(options?: any): AxiosPromise<Game> {
-      return localVarFp
-        .createNewGame(options)
-        .then((request) => request(axios, basePath))
+    createNewGame(xFingerprint: string, acceptLanguage?: string, options?: any): AxiosPromise<Game> {
+      return localVarFp.createNewGame(xFingerprint, acceptLanguage, options).then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Find game by id
      * @param {number} id
+     * @param {string} xFingerprint
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getGameById(id: number, options?: any): AxiosPromise<Game> {
+    getGameById(id: number, xFingerprint: string, acceptLanguage?: string, options?: any): AxiosPromise<Game> {
       return localVarFp
-        .getGameById(id, options)
+        .getGameById(id, xFingerprint, acceptLanguage, options)
         .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Get available languages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getLanguageList(options?: any): AxiosPromise<Array<Language>> {
+      return localVarFp.getLanguageList(options).then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Get game settings
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSettings(options?: any): AxiosPromise<Settings> {
+      return localVarFp.getSettings(options).then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Add new guess
      * @param {number} id
-     * @param {Guess} [guess]
+     * @param {string} xFingerprint
+     * @param {Guess} guess
+     * @param {string} [acceptLanguage]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    makeGuess(id: number, guess?: Guess, options?: any): AxiosPromise<Game> {
+    makeGuess(
+      id: number,
+      xFingerprint: string,
+      guess: Guess,
+      acceptLanguage?: string,
+      options?: any
+    ): AxiosPromise<Game> {
       return localVarFp
-        .makeGuess(id, guess, options)
+        .makeGuess(id, xFingerprint, guess, acceptLanguage, options)
         .then((request) => request(axios, basePath))
     }
   }
@@ -450,13 +581,15 @@ export class WordleApi extends BaseAPI {
   /**
    *
    * @summary Create new game instance
+   * @param {string} xFingerprint
+   * @param {string} [acceptLanguage]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof WordleApi
    */
-  public createNewGame(options?: AxiosRequestConfig) {
+  public createNewGame(xFingerprint: string, acceptLanguage?: string, options?: AxiosRequestConfig) {
     return WordleApiFp(this.configuration)
-      .createNewGame(options)
+      .createNewGame(xFingerprint, acceptLanguage, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -464,13 +597,41 @@ export class WordleApi extends BaseAPI {
    *
    * @summary Find game by id
    * @param {number} id
+   * @param {string} xFingerprint
+   * @param {string} [acceptLanguage]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof WordleApi
    */
-  public getGameById(id: number, options?: AxiosRequestConfig) {
+  public getGameById(id: number, xFingerprint: string, acceptLanguage?: string, options?: AxiosRequestConfig) {
     return WordleApiFp(this.configuration)
-      .getGameById(id, options)
+      .getGameById(id, xFingerprint, acceptLanguage, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get available languages
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof WordleApi
+   */
+  public getLanguageList(options?: AxiosRequestConfig) {
+    return WordleApiFp(this.configuration)
+      .getLanguageList(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get game settings
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof WordleApi
+   */
+  public getSettings(options?: AxiosRequestConfig) {
+    return WordleApiFp(this.configuration)
+      .getSettings(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -478,14 +639,22 @@ export class WordleApi extends BaseAPI {
    *
    * @summary Add new guess
    * @param {number} id
-   * @param {Guess} [guess]
+   * @param {string} xFingerprint
+   * @param {Guess} guess
+   * @param {string} [acceptLanguage]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof WordleApi
    */
-  public makeGuess(id: number, guess?: Guess, options?: AxiosRequestConfig) {
+  public makeGuess(
+    id: number,
+    xFingerprint: string,
+    guess: Guess,
+    acceptLanguage?: string,
+    options?: AxiosRequestConfig
+  ) {
     return WordleApiFp(this.configuration)
-      .makeGuess(id, guess, options)
+      .makeGuess(id, xFingerprint, guess, acceptLanguage, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

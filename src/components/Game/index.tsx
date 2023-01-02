@@ -1,7 +1,7 @@
 import React, { FC, FormEvent, useMemo, useEffect } from 'react'
 import { WordInput } from '../WordInput'
 import ArrowIcon from '../../assets/icons/arrow.component.svg'
-import { useGame } from '../../hooks/useGame'
+import { useGame } from '../../hooks'
 import { Styled } from './styled'
 
 interface IGame {
@@ -10,15 +10,12 @@ interface IGame {
 }
 
 export const Game: FC<IGame> = ({ rounds, wordLength }) => {
-  const { isLoading, isComplete, game, startGame, makeGuess } = useGame()
-  const roundsMap: undefined[] = useMemo(
-    () => new Array(rounds).fill(undefined),
-    [rounds]
-  )
+  const { isLoading, isCompleted, game, startGame, makeGuess } = useGame()
+  const roundsMap: undefined[] = useMemo(() => new Array(rounds).fill(undefined), [rounds])
 
   const { guess = [] } = game ?? {}
   const round = guess.length
-  const disabled = isLoading || isComplete || !game
+  const disabled = isLoading || isCompleted || !game
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
