@@ -1,7 +1,7 @@
 import React, { FC, FormEvent, useMemo, useEffect } from 'react'
 import { WordInput } from '../WordInput'
 import ArrowIcon from '../../assets/icons/arrow.component.svg'
-import { useGame } from '../../hooks'
+import { EGameActionType, useGame } from '../../hooks'
 import { Styled } from './styled'
 
 interface IGame {
@@ -10,12 +10,11 @@ interface IGame {
 }
 
 export const Game: FC<IGame> = ({ rounds, wordLength }) => {
-  const { isLoading, isCompleted, game, startGame, makeGuess } = useGame()
+  const { isLoading, isError, game, dispatch } = useGame()
   const roundsMap: undefined[] = useMemo(() => new Array(rounds).fill(undefined), [rounds])
-
-  const { guess = [] } = game ?? {}
+  const { id: gameId, guess = [], isCompleted } = game ?? {}
   const round = guess.length
-  const disabled = isLoading || isCompleted || !game
+  const disabled = isError || isLoading || !game || isCompleted
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -26,34 +25,42 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
       return false
     }
 
-    void makeGuess(word)
+    void dispatch({ type: EGameActionType.GUESS, payload: { id: gameId ?? 0, guess: word } })
   }
 
   useEffect(() => {
-    void startGame()
+    void dispatch({ type: EGameActionType.START })
   }, [])
 
   return (
     <form onSubmit={handleSubmit}>
       <Styled.FormContent>
-        <Styled.ArrowRight index={round}>
-          <ArrowIcon color="#fff" />
-        </Styled.ArrowRight>
+        {
+          !isCompleted && (
+            <Styled.ArrowRight index={round}>
+              <ArrowIcon color="#fff" />
+            </Styled.ArrowRight>
+          )
+        }
         <div>
           {roundsMap.map((_, index) => (
             <Styled.WordWrapper key={index}>
               <WordInput
                 length={wordLength}
-                disabled={disabled || index !== round}
+                disabled={disabled ?? index !== round}
                 name={`word-${index}`}
                 result={guess[index]?.result}
               />
             </Styled.WordWrapper>
           ))}
         </div>
-        <Styled.ArrowLeft index={round}>
-          <ArrowIcon color="#fff" />
-        </Styled.ArrowLeft>
+        {
+          !isCompleted && (
+            <Styled.ArrowLeft index={round}>
+              <ArrowIcon color="#fff" />
+            </Styled.ArrowLeft>
+          )
+        }
       </Styled.FormContent>
       <input type="submit" hidden />
     </form>
