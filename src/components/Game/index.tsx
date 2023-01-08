@@ -45,7 +45,7 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
             <Styled.WordWrapper key={index}>
               <WordInput
                 length={wordLength}
-                disabled={disabled ?? index !== round}
+                disabled={!!disabled || index !== round}
                 name={`word-${index}`}
                 result={guess[index]?.result}
               />
