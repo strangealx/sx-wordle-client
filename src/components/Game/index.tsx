@@ -35,13 +35,11 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
   return (
     <form onSubmit={handleSubmit}>
       <Styled.FormContent>
-        {
-          !isCompleted && (
-            <Styled.ArrowRight index={round}>
-              <ArrowIcon color="#fff" />
-            </Styled.ArrowRight>
-          )
-        }
+        {!isCompleted && (
+          <Styled.ArrowRight index={round}>
+            <ArrowIcon color="#fff" />
+          </Styled.ArrowRight>
+        )}
         <div>
           {roundsMap.map((_, index) => (
             <Styled.WordWrapper key={index}>
@@ -54,13 +52,11 @@ export const Game: FC<IGame> = ({ rounds, wordLength }) => {
             </Styled.WordWrapper>
           ))}
         </div>
-        {
-          !isCompleted && (
-            <Styled.ArrowLeft index={round}>
-              <ArrowIcon color="#fff" />
-            </Styled.ArrowLeft>
-          )
-        }
+        {!isCompleted && (
+          <Styled.ArrowLeft index={round}>
+            <ArrowIcon color="#fff" />
+          </Styled.ArrowLeft>
+        )}
       </Styled.FormContent>
       <input type="submit" hidden />
     </form>

@@ -6,7 +6,7 @@ export enum EGameActionType {
   RESUME,
   FETCH_INIT,
   FETCH_SUCCESS,
-  FETCH_ERROR,
+  FETCH_ERROR
 }
 
 export interface IGameState {
